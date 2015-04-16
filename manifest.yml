@@ -1,0 +1,12 @@
+---
+applications:
+- name: gaas-hello
+  services:
+    - IBM Globalization-ny
+  disk_quota: 384M
+  host: gaas-hello
+  name: gaas-hello
+  path: .
+  domain: mybluemix.net
+  instances: 1
+  memory: 128M

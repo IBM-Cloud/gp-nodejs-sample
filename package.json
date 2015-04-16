@@ -1,0 +1,21 @@
+{
+  "name": "gaas-hello",
+  "version": "1.0.0",
+  "description": "Bluemix app demonstrating IBM Globalization- just says 'hello'",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/gaas-nodejs-hello"
+  },
+  "author": "Steven R. Loomis <srloomis@us.ibm.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cfenv": "^1.0.0",
+    "express": "^4.12.3",
+    "gaas": "^1.0.0"
+  }
+}
