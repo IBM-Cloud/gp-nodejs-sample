@@ -47,7 +47,7 @@ app.get('/', function (req, res) {
   });
 });
 
-app.get(/^\/(\w+)/, function (req, res) {
+app.get(/^\/([\w-]+)/, function (req, res) {
   var lang = req.params[0];
   myProject.getResourceEntry({ resKey: 'hello', languageID: lang}, function (err, entry) {
     if(err) {
