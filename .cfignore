@@ -1,9 +1,5 @@
-launchConfigurations/
-.git/
-node_modules/
-.cfignore
-.gitignore
+.git
+node_modules
+launchConfigurations
 *~
-*.txt
-hello.json
-*.log
+.git

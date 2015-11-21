@@ -1,4 +1,4 @@
-Bluemix sample: IBM Globalization "Hello" for Node.js
+Hello, Globalization Pipeline!
 ===
 <!--
 /*	
@@ -18,18 +18,23 @@ Bluemix sample: IBM Globalization "Hello" for Node.js
  */
 -->
 
+A simple sample for a stupendous service.
+
 INSTALLATION
 ===
-* create a bound service instance of IBM Globalization. It will have a name like `IBM Globalization-**`
- * go into the IBM Globalization dashboard and click "New Project"
+* `npm install`
+* create a bound service instance of the Globalization Pipeline.
+ * for testing locally, copy the credentials (starting with `{ credentials: … }` to `local-credentials.json`
+ * go into the Globalization Pipeline dashboard and click New Project
   * create a project with the Project ID `hello` and upload the [hello.json](hello.json) file here as JSON.
   * Add target languages, edit as desired
-* Edit `Manifest.yml` for your own application name and domain.
-* `cf push` to publish the application
+ * update `manifest.yml` to note the bound service name
+* Now you can use `npm run start` to test locally (using `local-credentials.json`)
+* `cf push` this application should post it to your BlueMix instance.
 
 USAGE
 ===
-Sample deployment: https://gaas-hello.mybluemix.net/
+Sample deployment: https://gp-nodejs-sample.mybluemix.net/
 
 * click on a language code to view 'hello' in that language.
 

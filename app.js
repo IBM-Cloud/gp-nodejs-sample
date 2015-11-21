@@ -19,47 +19,82 @@
  * limitations under the License.
  */
 
-// Set up GaaS
+var optional = require('optional');
 var appEnv = require('cfenv').getAppEnv();
-var gaasClient = require('gaas').getClient({credentials:
-                                          appEnv.getService(/IBM Globalization.*/).credentials});
+var gpClient = require('g11n-pipeline').getClient(
+  optional('./local-credentials.json')   // if it exists, use local-credentials.json
+    || {appEnv: appEnv}                  // otherwise, the appEnv
+);
 // Set up express
 var express = require('express');
 var app = express();
 
-var projectName = process.env.PROJECT_ID || 'hello';
-var myProject = gaasClient.project(projectName);
+var bundleName = process.env.BUNDLE_ID || 'hello';
+var mybundle = gpClient.bundle(bundleName);
 
+// Example: /
 app.get('/', function (req, res) {
-  myProject.getInfo({}, function (err, projInfo) {
-    res.set('Content-Type', 'text/html');
-    function addLang(lang) {
-      res.write('<li> <a href="/' + lang + '">' + lang + '</a>');
+  // For the root page, load the list of supported langs 
+  mybundle.getInfo({}, function (err, projInfo) {
+    if(err) {
+      // console.error(err);
+      res.write(err.toString());
+      res.end();
+    } else {
+      res.set('Content-Type', 'text/html');
+      function addLang(lang) {
+        res.write('<li> '+lang+': <a href="/' + lang + '">json</a> <a href="/' + lang + '/hello">hello</a>');
+        res.write('</li>');
+      }
+      res.write('<h1>Welcome to the Globalization Pipeline Node.js sample!</h1>');
+      res.write('<h2> Pick a language code:</h2>');
+      res.write('<ul>');
+      // add the source (probably english)
+      addLang(projInfo.sourceLanguage);
+      // add all of the targets
+      if( projInfo.targetLanguages) {
+        projInfo.targetLanguages.forEach( addLang );
+      }
+      res.write('</ul>');
+      res.end();
     }
-    res.write('<h1>Welcome to GaaS! Pick a language code:</h1>');
-    res.write('<ul>');
-    addLang(projInfo.sourceLanguage);
-    if( projInfo.targetLanguages) {
-      projInfo.targetLanguages.forEach( addLang );
-    }
-    res.write('</ul>');
-    res.end();
   });
 });
 
-app.get(/^\/([\w-]+)/, function (req, res) {
+// example:   /fr/hello
+app.get(/^\/(\w+)\/hello/, function (req, res) {
   var lang = req.params[0];
-  myProject.getResourceEntry({ resKey: 'hello', languageID: lang}, function (err, entry) {
+  // Just get this string
+  mybundle.getEntryInfo({ resourceKey: 'hello', languageId: lang}, function (err, data) {
     if(err) {
       console.error(err);
       res.end('Sorry, an error occured.');
-    } else if(entry.translationStatus === 'failed') {
-      res.end(lang + ':\n\n** failed: retry the translation from the dashboard');
-    } else if(entry.translationStatus === 'inProgress') {
-      res.end(lang + ':\n\n** inProgress: still working on translation (try back later)');
     } else {
-      res.writeHead(200, {'Content-Type': 'text/plain;charset=utf-8', 'Content-language': lang});
-      res.end(lang + ': ' + entry.value);
+      var entry = data.resourceEntry;
+      if(entry.translationStatus === 'failed') {
+        res.end(lang + ':\n\n** failed: retry the translation from the dashboard');
+      } else if(entry.translationStatus === 'inProgress') {
+        res.end(lang + ':\n\n** inProgress: still working on translation (try back later)');
+      } else {
+        // write the value
+        res.writeHead(200, {'Content-Type': 'text/plain;charset=utf-8', 'Content-language': lang});
+        res.end(lang + ': ' + entry.value);
+      }
+    }
+  });
+});
+
+// Example:   /fr
+app.get(/^\/(\w+)/, function (req, res) {
+  var lang = req.params[0];
+  mybundle.getStrings({ languageId: lang}, function (err, entry) {
+    if(err) {
+      console.error(err);
+      res.end('Sorry, an error occured.');
+    } else {
+      // write the strings as JSON
+      res.writeHead(200, {'Content-Type': 'application/json;charset=utf-8', 'Content-language': lang, 'Date':entry.updatedAt});
+      res.end(JSON.stringify(entry.resourceStrings));
     }
   });
 });

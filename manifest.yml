@@ -1,11 +1,11 @@
 ---
 applications:
-- name: gaas-hello
+- name: gp-nodejs-sample
   services:
-    - IBM Globalization-ny
+    - Globalization Pipeline-ec
   disk_quota: 384M
-  host: gaas-hello
-  name: gaas-hello
+  host: gp-nodejs-sample
+  name: gp-nodejs-sample
   path: .
   domain: mybluemix.net
   instances: 1
