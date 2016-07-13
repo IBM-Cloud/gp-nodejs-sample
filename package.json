@@ -1,6 +1,6 @@
 {
   "name": "gp-nodejs-sample",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sample nodejs app, just says 'hello'",
   "main": "app.js",
   "scripts": {
@@ -11,8 +11,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "cfenv": "^1.0.3",
-    "express": "^4.13.3",
-    "g11n-pipeline": "^1.1.0",
+    "express": "^4.14.0",
+    "g11n-pipeline": "^1.2.0",
     "optional": "^0.1.3"
   }
 }
