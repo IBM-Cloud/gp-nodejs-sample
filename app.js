@@ -4,7 +4,7 @@
  */
  
 /*	
- * Copyright IBM Corp. 2015
+ * Copyright IBM Corp. 2015,2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ var mybundle = gpClient.bundle(bundleName);
 // Example: /
 app.get('/', function (req, res) {
   // For the root page, load the list of supported langs 
-  mybundle.getInfo({}, function (err, projInfo) {
+  mybundle.getInfo(function (err, projInfo) {
     if(err) {
       // console.error(err);
       res.write(err.toString());
@@ -49,12 +49,8 @@ app.get('/', function (req, res) {
       res.write('<h1>Welcome to the Globalization Pipeline Node.js sample!</h1>');
       res.write('<h2> Pick a language code:</h2>');
       res.write('<ul>');
-      // add the source (probably english)
-      addLang(projInfo.sourceLanguage);
-      // add all of the targets
-      if( projInfo.targetLanguages) {
-        projInfo.targetLanguages.forEach( addLang );
-      }
+      projInfo.languages() // --> Array: [ 'en', 'de', … ]
+        .forEach( addLang );
       res.write('</ul>');
       res.end();
     }
@@ -65,12 +61,12 @@ app.get('/', function (req, res) {
 app.get(/^\/(\w+)\/hello/, function (req, res) {
   var lang = req.params[0];
   // Just get this string
-  mybundle.getEntryInfo({ resourceKey: 'hello', languageId: lang}, function (err, data) {
+  mybundle.entry({ resourceKey: 'hello', languageId: lang})
+   .getInfo(function (err, entry) {
     if(err) {
       console.error(err);
       res.end('Sorry, an error occured.');
     } else {
-      var entry = data.resourceEntry;
       if(entry.translationStatus === 'failed') {
         res.end(lang + ':\n\n** failed: retry the translation from the dashboard');
       } else if(entry.translationStatus === 'inProgress') {
