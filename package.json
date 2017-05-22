@@ -9,6 +9,10 @@
   },
   "author": "Steven R. Loomis",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/gp-nodejs-sample"
+  },
   "dependencies": {
     "cfenv": "^1.0.3",
     "express": "^4.14.0",

@@ -5,7 +5,6 @@ applications:
     - Globalization Pipeline-ec
   disk_quota: 384M
   host: gp-nodejs-sample
-  name: gp-nodejs-sample
   path: .
   domain: mybluemix.net
   instances: 1
