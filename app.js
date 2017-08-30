@@ -28,6 +28,11 @@ const gpClient = require('g11n-pipeline').getClient(
 // Set up express
 const express = require('express');
 const app = express();
+const pino = require('pino')({ level: process.env.PINO_LEVEL || 'info' });
+
+//log things
+const pinoLogger = require('express-pino-logger')({ logger: pino });
+app.use(pinoLogger);
 
 function pinoLogErr (err, req, res, next) {
   req.log.error(err);
@@ -105,6 +110,6 @@ app.get(/^\/(\w+)/, (req, res) => {
   });
 });
 
-/*const server = */app.listen(appEnv.port, appEnv.bind, function () {
+const server = app.listen(appEnv.port, appEnv.bind, function() {
   pino.info({ address: server.address(), url: appEnv.url });
 });

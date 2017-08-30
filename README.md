@@ -2,7 +2,7 @@ Hello, Globalization Pipeline!
 ===
 <!--
 /*	
- * Copyright IBM Corp. 2015
+ * Copyright IBM Corp. 2015-2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ good place to begin is by reading the [Quick Start Guide](https://github.com/IBM
 * `npm install`
 * Now you can use `npm run start` to test locally (using `local-credentials.json`)
 * `cf push` this application should post it to your BlueMix instance.
+* For decoding the logs, use `npm install -g pino` then `npm run start | pino` ( see [pino](https://github.com/pinojs/pino) )
 
 Usage
 -----
