@@ -29,6 +29,10 @@ var gpClient = require('g11n-pipeline').getClient(
 var express = require('express');
 var app = express();
 
+//Ignore all favicon requests
+var nofavicon = require("express-no-favicons")
+app.use(nofavicon());
+
 var bundleName = process.env.BUNDLE_ID || 'hello';
 var mybundle = gpClient.bundle(bundleName);
 
