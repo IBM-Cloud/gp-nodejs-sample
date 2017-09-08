@@ -19,9 +19,9 @@
     "express": "^4.15.4",
     "express-no-favicons": "^0.0.1",
     "express-pino-logger": "^2.0.0",
-    "g11n-pipeline": "^1.5.1",
+    "g11n-pipeline": "^2.0.0",
     "optional": "^0.1.4",
-    "pino": "^4.7.1"
+    "pino": "^4.7.2"
   },
   "engines": {
     "node": ">=4"
