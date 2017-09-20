@@ -34,6 +34,11 @@ good place to begin is by reading the [Quick Start Guide](https://github.com/IBM
 * `cf push` this application should post it to your BlueMix instance.
 * For decoding the logs, use `npm install -g pino` then `npm run start | pino` ( see [pino](https://github.com/pinojs/pino) )
 
+Promises
+--------
+
+Also, see [promise-test.js](promise-test.js) for an example of using promises and async/await on Node v7+
+
 Usage
 -----
 Sample deployment: https://gp-nodejs-sample.mybluemix.net/
