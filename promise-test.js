@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*eslint-disable no-console*/
 
 /**
  * Simple test showing use of callbacks vs. promises vs. async.
@@ -41,14 +42,14 @@ const entry = bundle.entry({ resourceKey: 'hello', languageId: 'es' });
  * @param {ResourceEntry} entry
  */
 function printWithCallback(entry) {
-    // The callback way:
-    entry.getInfo(function (err, data) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.log('callback:',  data.value);
-    });
+  // The callback way:
+  entry.getInfo(function (err, data) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('callback:',  data.value);
+  });
 }
 
 /**
@@ -57,7 +58,7 @@ function printWithCallback(entry) {
  * @return Promise
  */
 function printAsPromised(entry) {
-    return entry.getInfo()
+  return entry.getInfo()
     .then(data => console.log('promised:', data.value));
 }
 
@@ -65,13 +66,13 @@ function printAsPromised(entry) {
  * Print out this entry’s value. Use async/await.
  */
 async function printAsync(entry) {
-    const data = await entry.getInfo();
-    console.log('await’ed:', data.value);
+  const data = await entry.getInfo();
+  console.log('await’ed:', data.value);
 }
 
 // Now call these.
 Promise.resolve()
-.then(() => printAsPromised(entry))
-.then(() => printAsync(entry))
-.then(() => printWithCallback(entry))
-.catch(console.error);
+  .then(() => printAsPromised(entry))
+  .then(() => printAsync(entry))
+  .then(() => printWithCallback(entry))
+  .catch(console.error);

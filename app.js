@@ -88,12 +88,12 @@ app.get(/^\/(\w+)\/hello/, (req, res) => {
 app.get(/^\/(\w+)/, (req, res) => {
   var lang = req.params[0];
   mybundle.getStrings({ languageId: lang})
-  .then((entry) => {
+    .then((entry) => {
     // write the strings as JSON
-    res.set('Content-language', lang);
-    res.set('Date', entry.updatedAt);
-    res.json(entry.resourceStrings);
-  });
+      res.set('Content-language', lang);
+      res.set('Date', entry.updatedAt);
+      res.json(entry.resourceStrings);
+    });
 });
 
 const server = app.listen(appEnv.port, appEnv.bind, function() {
