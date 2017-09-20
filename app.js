@@ -2,9 +2,9 @@
  * @author Steven R. Loomis
  * simple 'hello world' gaas sample - "express" style
  */
- 
-/*	
- * Copyright IBM Corp. 2015,2016
+
+/*
+ * Copyright IBM Corp. 2015-2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,65 +19,75 @@
  * limitations under the License.
  */
 
-var optional = require('optional');
-var appEnv = require('cfenv').getAppEnv();
-var gpClient = require('g11n-pipeline').getClient(
+const optional = require('optional');
+const appEnv = require('cfenv').getAppEnv();
+const gpClient = require('g11n-pipeline').getClient(
   optional('./local-credentials.json')   // if it exists, use local-credentials.json
-    || {appEnv: appEnv}                  // otherwise, the appEnv
+  || { appEnv: appEnv }                  // otherwise, the appEnv
 );
 // Set up express
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
+const pino = require('pino')({ level: process.env.PINO_LEVEL || 'info' });
+
+//log things
+const pinoLogger = require('express-pino-logger')({ logger: pino });
+app.use(pinoLogger);
+
+function pinoLogErr (err, req, res, next) {
+  req.log.error(err);
+  return next(err);
+}
+app.use(pinoLogErr);
 
 //Ignore all favicon requests
-var nofavicon = require("express-no-favicons")
+const nofavicon = require("express-no-favicons")
 app.use(nofavicon());
 
-var bundleName = process.env.BUNDLE_ID || 'hello';
-var mybundle = gpClient.bundle(bundleName);
+const bundleName = process.env.BUNDLE_ID || 'hello';
+const mybundle = gpClient.bundle(bundleName);
 
 // Example: /
-app.get('/', function (req, res) {
-  // For the root page, load the list of supported langs 
+app.get('/', (req, res) => {
+  // For the root page, load the list of supported langs
   mybundle.getInfo(function (err, projInfo) {
     if(err) {
-      // console.error(err);
+      req.log.error(err);
       res.write(err.toString());
       res.end();
     } else {
       res.set('Content-Type', 'text/html');
-      function addLang(lang) {
-        res.write('<li> '+lang+': <a href="/' + lang + '">json</a> <a href="/' + lang + '/hello">hello</a>');
-        res.write('</li>');
-      }
       res.write('<h1>Welcome to the Globalization Pipeline Node.js sample!</h1>');
       res.write('<h2> Pick a language code:</h2>');
       res.write('<ul>');
       projInfo.languages() // --> Array: [ 'en', 'de', … ]
-        .forEach( addLang );
+        .forEach((lang) => {
+          res.write('<li> ' + lang + ': <a href="/' + lang + '">json</a> <a href="/' + lang + '/hello">hello</a>');
+          res.write('</li>');
+        });
       res.write('</ul>');
       res.end();
-    }
-  });
+      }
+    });
 });
 
 // example:   /fr/hello
-app.get(/^\/(\w+)\/hello/, function (req, res) {
+app.get(/^\/(\w+)\/hello/, (req, res) => {
   var lang = req.params[0];
   // Just get this string
   mybundle.entry({ resourceKey: 'hello', languageId: lang})
-   .getInfo(function (err, entry) {
+  .getInfo(function (err, entry) {
     if(err) {
-      console.error(err);
+      req.log.error(err);
       res.end('Sorry, an error occured.');
     } else {
       if(entry.translationStatus === 'failed') {
-        res.end(lang + ':\n\n** failed: retry the translation from the dashboard');
-      } else if(entry.translationStatus === 'inProgress') {
+      res.end(lang + ':\n\n** failed: retry the translation from the dashboard');
+      } else if (entry.translationStatus === 'inProgress') {
         res.end(lang + ':\n\n** inProgress: still working on translation (try back later)');
       } else {
         // write the value
-        res.writeHead(200, {'Content-Type': 'text/plain;charset=utf-8', 'Content-language': lang});
+        res.writeHead(200, { 'Content-Type': 'text/plain;charset=utf-8', 'Content-language': lang });
         res.end(lang + ': ' + entry.value);
       }
     }
@@ -85,20 +95,21 @@ app.get(/^\/(\w+)\/hello/, function (req, res) {
 });
 
 // Example:   /fr
-app.get(/^\/(\w+)/, function (req, res) {
+app.get(/^\/(\w+)/, (req, res) => {
   var lang = req.params[0];
   mybundle.getStrings({ languageId: lang}, function (err, entry) {
     if(err) {
-      console.error(err);
+      req.log.error(err);
       res.end('Sorry, an error occured.');
     } else {
       // write the strings as JSON
-      res.writeHead(200, {'Content-Type': 'application/json;charset=utf-8', 'Content-language': lang, 'Date':entry.updatedAt});
-      res.end(JSON.stringify(entry.resourceStrings));
+      res.set('Content-language', lang);
+      res.set('Date', entry.updatedAt);
+      res.json(entry.resourceStrings);
     }
   });
 });
 
-var server = app.listen(appEnv.port, appEnv.bind, function() {
-  console.dir( server.address());
+const server = app.listen(appEnv.port, appEnv.bind, function() {
+  pino.info({ address: server.address(), url: appEnv.url });
 });

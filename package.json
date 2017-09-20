@@ -1,11 +1,12 @@
 {
   "name": "gp-nodejs-sample",
-  "version": "1.2.0",
-  "description": "Sample nodejs app, just says 'hello'",
+  "version": "1.3.0-0",
+  "description": "node.js sample app for Globalization Pipeline",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "test": "echo 'OK?!'",
+    "start": "node app.js",
+    "pretest": "eslint *.js"
   },
   "author": "Steven R. Loomis",
   "license": "Apache-2.0",
@@ -14,10 +15,19 @@
     "url": "https://github.com/IBM-Bluemix/gp-nodejs-sample"
   },
   "dependencies": {
-    "cfenv": "^1.0.3",
-    "express": "^4.14.0",
-    "g11n-pipeline": "^1.3.0",
-    "optional": "^0.1.3",
-    "express-no-favicons": "^0.0.1"
-  }
+    "cfenv": "^1.0.4",
+    "express": "^4.15.4",
+    "express-no-favicons": "^0.0.1",
+    "express-pino-logger": "^2.0.0",
+    "g11n-pipeline": "^1.5.1",
+    "optional": "^0.1.4",
+    "pino": "^4.7.1"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0"
+  },
+  "private": true
 }
