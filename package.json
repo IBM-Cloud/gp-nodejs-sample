@@ -15,11 +15,11 @@
     "url": "https://github.com/IBM-Bluemix/gp-nodejs-sample"
   },
   "dependencies": {
-    "cfenv": "^1.0.4",
-    "express": "^4.15.4",
+    "cfenv": "^1.2.2",
+    "express": "^4.16.4",
     "express-no-favicons": "^0.0.1",
     "express-pino-logger": "^2.0.0",
-    "g11n-pipeline": "^2.0.0",
+    "g11n-pipeline": "^3.4.0",
     "optional": "^0.1.4",
     "pino": "^4.7.2"
   },
